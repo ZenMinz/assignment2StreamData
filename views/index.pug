@@ -1,0 +1,73 @@
+extends layout
+
+block content
+	h1 #{title}
+	p Welcome to #{title}
+	form#message-entry(method="post", action='javascript:sendRequest()')
+		div.input
+			input#latestTime(type='hidden', name='latestTime', value=0)
+		div.actions
+			input(type="submit")
+			br
+			button(onclick='stopRequest')
+	h2 Tweets
+	div
+		table#Tweets
+
+	script(src="https://code.jquery.com/jquery-3.1.1.min.js")
+	script.
+		let lastSeen = $('#latestTime').val();
+		onload = function conversation() {
+			let time = new Date();
+			console.log(time);
+			lastSeen = $('#latestTime').val();
+			$.get('/twitter/twitter', { lastSeen : lastSeen }, function (data) {
+				//console.log(data[2].url);
+				console.log(data)
+				displayTweet(data);
+				
+			});
+			interval = setTimeout(conversation, 10000); 
+		}
+		var xhr;
+		function stopRequest() {
+			xhr.abort();
+		}
+		function sendRequest() {
+			xhr = $.post('/twitter', function (data) {
+			});
+		}
+
+		function displayTweet(data) {
+
+
+			for (let i = 0; i < data.length; i ++) {
+				let str;
+				let tweet = data[i];
+				let name = tweet.Name;
+				let url = tweet.url;
+				let text = tweet.text;
+				let time2 = tweet.timestamp;
+				let time = new Date(tweet.timestamp);
+				str +=		`<div class="item">`;
+				str +=			`<div class="ui tiny image">`;
+				str +=				`<img src="${url}" height="50" width="50">`;
+				str +=			`</div>`;
+				str +=			`<div class="content">`;
+				str +=				`<a class="header">${name}</a>`;
+				str +=					`<div class="meta">`;
+				str +=						`<span>Description</span>`;
+				str +=					`</div>`;
+				str +=					`<div class="Text">`;
+				str +=						`<p>Text: ${text}</p>`;
+				str +=					`</div>`;
+				str +=					`<div class="extra">`;
+				str +=						`On: ${time}`;
+				str +=					`</div>`;
+				str +=			`</div>`;
+				str +=		`</div>`;
+				
+				$("#messages").prepend(str);
+				//$('#latestTime').val(time2);	
+			}
+		}
