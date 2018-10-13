@@ -40,12 +40,14 @@ block content
 		}
 		function sendRequest() {
 			xhr = $.post('/twitter', function (data) {
+				console.log(data);
 			});
 		}
 
 		function stopStream() {
 			console.log("try to stop");
 			alert("try to stop");
+			clearInterval(interval);
 			$.post('/twitter/stop', function(data) {
 				alert("Stop!!");
 			});

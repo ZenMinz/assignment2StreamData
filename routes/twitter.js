@@ -111,7 +111,7 @@ router.post('/stream', function (req, res, next) {
 			url : data.user.profile_image_url
 		}
 		tweets.push(tweet);
-		//sconsole.log(tweet);
+		res.send("DOne!");
 	});
  
 	stream.on('error', function(error) {
@@ -149,8 +149,9 @@ router.get('/twitter', function (req, res) {
 	}
 })
 
-router.post('/stop', function (req, res) {
-	stream.destroy();
+router.post('/stop', function (req, res, next) {
+	console.log("test"); 
+	streamAPI.destroy();
 	res.send("done!!!");
 })
 module.exports = router;
