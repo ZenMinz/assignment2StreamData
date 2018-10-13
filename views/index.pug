@@ -123,12 +123,12 @@ block content
 			}
 			let length = selected.length;
 			//selected = JSON.stringify(length);
-			//let str = selected.join(',');
-			//console.log(str);
-			for (let i = 0; i < length; i ++) {
-				sendPostRequest(selected[i]);
-			}
-			//sendPostRequest(str);
+			let str = selected.join(',');
+			console.log(str);
+			//for (let i = 0; i < length; i ++) {
+			//sendPostRequest(selected[i]);
+			//}
+			sendPostRequest(str);
 
 
 		}

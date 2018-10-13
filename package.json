@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "pm2 start ./bin/www", 
-    "dev": "pm2 start ./pm2_config/ecosystem.config.js"
+    "dev": "pm2 start ./pm2_config/ecosystem.config.js",
+    "test" : "nodemon ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
