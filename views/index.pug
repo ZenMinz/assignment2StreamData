@@ -3,31 +3,34 @@ extends layout
 block content
 	h1 #{title}
 	p Welcome to #{title}
-	form#message-entry(method="post", action='javascript:sendRequest()')
+	form#message-entry(method="post", action='javascript:getHashTags()')
 		div.input
 			input#latestTime(type='hidden', name='latestTime', value=0)
 		div.actions
 			input(type="submit")
 			br
-			button(onclick='stopRequest')
-	h2 Tweets
-	div
-		table#Tweets
 
-	script(src="https://code.jquery.com/jquery-3.1.1.min.js")
+		br
+		div.tagInput
+	h2 Tweets
+	button#test(onclick='getCheckedHashtag')
+		| Next
+	div.field
+		div#messages
 	script.
+		let tweets;
 		let lastSeen = $('#latestTime').val();
 		onload = function conversation() {
 			let time = new Date();
 			console.log(time);
 			lastSeen = $('#latestTime').val();
-			$.get('/twitter/twitter', { lastSeen : lastSeen }, function (data) {
+			$.get('/twitter/twitter', function (data) {
 				//console.log(data[2].url);
 				console.log(data)
 				displayTweet(data);
 				
 			});
-			interval = setTimeout(conversation, 10000); 
+			interval = setTimeout(conversation, 5000); 
 		}
 		var xhr;
 		function stopRequest() {
@@ -42,14 +45,13 @@ block content
 
 
 			for (let i = 0; i < data.length; i ++) {
-				let str;
 				let tweet = data[i];
 				let name = tweet.Name;
 				let url = tweet.url;
 				let text = tweet.text;
 				let time2 = tweet.timestamp;
 				let time = new Date(tweet.timestamp);
-				str +=		`<div class="item">`;
+				let str =		`<div class="item">`;
 				str +=			`<div class="ui tiny image">`;
 				str +=				`<img src="${url}" height="50" width="50">`;
 				str +=			`</div>`;
@@ -71,3 +73,66 @@ block content
 				//$('#latestTime').val(time2);	
 			}
 		}
+
+		function getHashTags() {
+			$.post('/twitter/hashTags', function (data) {
+				displayHashTags(data);
+				tweets = data;
+			})
+		}
+
+		function displayHashTags(data) {
+			$(".tagInput").empty();
+			let str2 = `<div class="ui grid">`;
+			for (let i = 0; i < data.length; i ++) {
+				//let str = `<button type="button" class="btn btn-outline-primary">${data[i]}</button>`;
+				//$(".tagInput").append(str);
+				let str = `<div class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" id="customCheck${i+1}">
+								<label class="custom-control-label" for="customCheck${i+1}">${data[i]}</label>
+							</div>`;
+				str2 += `<div class="four wide column">`;
+				str2 += `	<div class="ui toggle checkbox">
+								<input type="checkbox" id=check${i + 1}>
+								<label>${data[i]}</label>
+							</div>`;
+				str2 += `</div>`;
+				//$(".tagInput").append(str2);
+			}
+			str2 += `</div>`;
+
+			$(".tagInput").append(str2);
+
+		}
+		$("#test").click(function() {
+			getCheckedHashtag();
+		})
+
+		function sendPostRequest(trend) {
+			$.post('/twitter/stream', {'trend': trend}, function (data) {
+				console.log(data);
+			})
+		}
+
+		function getCheckedHashtag() {
+			let selected = [];
+			for (let i = 0; i < tweets.length; i++) {
+				if ($(`#check${i+1}`).is(":checked")) {
+					selected.push(tweets[i]);
+				}
+			}
+			let length = selected.length;
+			//selected = JSON.stringify(length);
+			//let str = selected.join(',');
+			//console.log(str);
+			for (let i = 0; i < length; i ++) {
+				sendPostRequest(selected[i]);
+			}
+			//sendPostRequest(str);
+
+
+		}
+
+		$(".btn").click(function() {
+			$(".btn").css("background-color","yellow");
+		})
