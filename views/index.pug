@@ -15,6 +15,8 @@ block content
 	h2 Tweets
 	button#test(onclick='getCheckedHashtag')
 		| Next
+	button#test2(onclick='stopStream()')
+		| Stop
 	div.field
 		div#messages
 	script.
@@ -41,9 +43,14 @@ block content
 			});
 		}
 
+		function stopStream() {
+			console.log("try to stop");
+			alert("try to stop");
+			$.post('/twitter/stop', function(data) {
+				alert("Stop!!");
+			});
+		}
 		function displayTweet(data) {
-
-
 			for (let i = 0; i < data.length; i ++) {
 				let tweet = data[i];
 				let name = tweet.Name;

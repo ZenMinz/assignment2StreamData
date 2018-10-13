@@ -76,7 +76,7 @@ router.post('/hashTags', function (req, res, next) {
 	})
 
 })
-
+let streamAPI = {};
 router.post('/stream', function (req, res, next) {
 	var data = req.body.trend;
 	//console.log(data);
@@ -92,6 +92,7 @@ router.post('/stream', function (req, res, next) {
 
 
 	var stream = client.stream('statuses/filter', {track: data});
+	streamAPI = stream;
 	stream.on('data', function(data) {
 		let text;
 		if (!data.extended_tweet) {
@@ -146,5 +147,10 @@ router.get('/twitter', function (req, res) {
 		console.log(analyseTweet(latestTweets));
 		res.json(latestTweets);
 	}
+})
+
+router.post('/stop', function (req, res) {
+	stream.destroy();
+	res.send("done!!!");
 })
 module.exports = router;
