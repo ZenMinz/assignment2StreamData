@@ -9,19 +9,73 @@ block content
 		div.actions
 			input(type="submit")
 			br
-
 		br
 		div.tagInput
-	h2 Tweets
-	button#test(onclick='getCheckedHashtag')
-		| Next
-	button#test2(onclick='stopStream()')
-		| Stop
+	button#test4.ui.right.labeled.icon.button(onclick='getCheckedHashtag()')
+		i.right.arrow.icon
+		|   Next
+	button#test3.ui.right.labeled.icon.button(onclick='stopStream()')
+		i.pause.icon
+		|  Pause
 	div.field
 		div#messages
+
+	#tab2.ui.top.attached.tabular.menu
+		a.item(data-tab='1') First
+		a.item(data-tab='2') Second
+		a.item(data-tab='3') Third
+	.ui.bottom.attached.tab.segment(data-tab='1')
+		| First
+	.ui.bottom.attached.tab.segment(data-tab='2')
+		| Second
+	.ui.bottom.attached.tab.segment(data-tab='3')
+		| Third
+
+
+	.ui.tabular.menu
+		.item(data-tab='tab-name') Tab Name
+		.item(data-tab='tab-name2') Tab Name 2
+	.ui.tab(data-tab='tab-name') Testing
+		// Tab Content !
+	.ui.tab(data-tab='tab-name2') Tesing
+		// Tab Content !
+
+	#tabs
+		ul
+			li
+				a(href='#tab1') #1
+		#tab1
+		ul
+			li
+				a(href='#tab2') #2
+		#tab2
+	button#add-tab Add tab
+	link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.css')
+	script(src='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js')
 	script.
+
 		let tweets;
 		let lastSeen = $('#latestTime').val();
+		$(document).ready(function() {
+			//$('.menu .item').tabs("refresh");
+			$('.menu .item').tab();
+			$('.tabular.menu .item').tab();
+			$("div#tabs").tabs();
+
+		$("button#add-tab").click(function() {
+			var num_tabs = $("div#tabs ul li").length + 1;
+
+				$("div#tabs ul").append(
+					"<li><a href='#tab" + num_tabs + "'>#" + num_tabs + "</a></li>"
+				);
+				$("div#tabs").append(
+					"<div id='tab" + num_tabs + "'>#" + num_tabs + "</div>"
+				);
+				$("div#tabs").tabs("refresh");
+			});  
+		})
+
+		$('.tabular.menu .item').tabs();
 		onload = function conversation() {
 			let time = new Date();
 			console.log(time);
@@ -32,7 +86,7 @@ block content
 				displayTweet(data);
 				
 			});
-			interval = setTimeout(conversation, 5000); 
+			//interval = setTimeout(conversation, 5000); 
 		}
 		var xhr;
 		function stopRequest() {
@@ -80,6 +134,17 @@ block content
 				
 				$("#messages").prepend(str);
 				//$('#latestTime').val(time2);	
+			}
+		}
+
+		function displayTweet2(data) {
+			for (let i = 0; i < data.length; i++) {
+				let tweeet = data[i];
+				let name = tweet.Name;
+				let url = tweet.url;
+				let text = tweet.text;
+				let time = new Date(tweet.timestamp);
+				let str = "";
 			}
 		}
 
