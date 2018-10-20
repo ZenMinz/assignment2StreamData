@@ -20,7 +20,7 @@ block content
 	div.field
 		div#messages
 
-	#tab2.ui.top.attached.tabular.menu
+	.ui.top.attached.tabular.menu
 		a.item(data-tab='1') First
 		a.item(data-tab='2') Second
 		a.item(data-tab='3') Third
@@ -31,36 +31,17 @@ block content
 	.ui.bottom.attached.tab.segment(data-tab='3')
 		| Third
 
-
-	.ui.tabular.menu
-		.item(data-tab='tab-name') Tab Name
-		.item(data-tab='tab-name2') Tab Name 2
-	.ui.tab(data-tab='tab-name') Testing
-		// Tab Content !
-	.ui.tab(data-tab='tab-name2') Tesing
-		// Tab Content !
-
-	#tabs
-		ul
-			li
-				a(href='#tab1') #1
-		#tab1
-		ul
-			li
-				a(href='#tab2') #2
-		#tab2
-	button#add-tab Add tab
 	link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.css')
 	script(src='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js')
 	script.
 
 		let tweets;
-		let lastSeen = $('#latestTime').val();
+		var lastSeen = 0;
+		let interval;
 		$(document).ready(function() {
 			//$('.menu .item').tabs("refresh");
 			$('.menu .item').tab();
-			$('.tabular.menu .item').tab();
-			$("div#tabs").tabs();
+			conversation();
 
 		$("button#add-tab").click(function() {
 			var num_tabs = $("div#tabs ul li").length + 1;
@@ -76,17 +57,21 @@ block content
 		})
 
 		$('.tabular.menu .item').tabs();
-		onload = function conversation() {
+
+		function conversation() {
 			let time = new Date();
 			console.log(time);
-			lastSeen = $('#latestTime').val();
-			$.get('/twitter/twitter', function (data) {
+			//lastSeen = $('#latestTime').val();
+			$.get('/twitter/twitter', {lastSeen : lastSeen}, function (data) {
 				//console.log(data[2].url);
-				console.log(data)
-				displayTweet(data);
+				if (data != "None") {
+					console.log(data)
+					displayTweet(data);
+				}
+
 				
 			});
-			//interval = setTimeout(conversation, 5000); 
+			 
 		}
 		var xhr;
 		function stopRequest() {
@@ -127,13 +112,15 @@ block content
 				str +=						`<p>Text: ${text}</p>`;
 				str +=					`</div>`;
 				str +=					`<div class="extra">`;
-				str +=						`On: ${time}`;
+				str +=						`On: ${time} and ${tweet.timestamp}`;
 				str +=					`</div>`;
 				str +=			`</div>`;
 				str +=		`</div>`;
 				
 				$("#messages").prepend(str);
-				//$('#latestTime').val(time2);	
+				$('#latestTime').val(time2);
+				lastSeen = time2;
+				console.log(lastSeen);
 			}
 		}
 
@@ -183,12 +170,15 @@ block content
 		})
 
 		function sendPostRequest(trend) {
+
+
 			$.post('/twitter/stream', {'trend': trend}, function (data) {
 				console.log(data);
 			})
 		}
 
 		function getCheckedHashtag() {
+			interval = setInterval(conversation, 5000);
 			let selected = [];
 			for (let i = 0; i < tweets.length; i++) {
 				if ($(`#check${i+1}`).is(":checked")) {
@@ -198,7 +188,7 @@ block content
 			let length = selected.length;
 			//selected = JSON.stringify(length);
 			let str = selected.join(',');
-			console.log(str);
+			//console.log(str);
 			//for (let i = 0; i < length; i ++) {
 			//sendPostRequest(selected[i]);
 			//}

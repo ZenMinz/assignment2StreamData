@@ -19,6 +19,7 @@ router.get('/', function(req, res, next) {
 });
 
 let tweets = [];
+let tweetsNew = [];
 let test = 0;
 //tweets.push("test");
 
@@ -111,7 +112,10 @@ router.post('/stream', function (req, res, next) {
 			url : data.user.profile_image_url
 		}
 		tweets.push(tweet);
-		res.send("DOne!");
+		//if (tweet.timestamp > lastSeen) {
+		//	tweetsNew.push(tweet);
+		//}
+		//res.send("DOne!");
 	});
  
 	stream.on('error', function(error) {
@@ -121,11 +125,12 @@ router.post('/stream', function (req, res, next) {
 
 router.get('/twitter', function (req, res) {
 	let latestTweets = [];
-	//let lastSeen = req.query.lastSeen;
+	let lastSeen = req.query.lastSeen;
+	console.log(lastSeen + " time");
 	if (tweets.length > 1) {
 		for (let i = 0; i < tweets.length; i ++) {
 			let time = tweets[i].timestamp;
-			if (time > test) {
+			if (time > lastSeen) {
 				latestTweets.push(tweets[i]);
 				//get the timestamp of the last tweet that got sent to the client side
 				test = tweets[i].timestamp;
@@ -135,17 +140,22 @@ router.get('/twitter', function (req, res) {
 
 		function analyseTweet(data) {
 			let results = [];
-			console.log(data.length);
+			//console.log(data.length);
 			for (let i = 0; i < data.length; i++) {
 				let text = data[i].text;
 				let result = sentiment.analyze(text);
 				results.push(result);
-				console.log(result);
+				//console.log(result);
 			}
 			return results;
 		}
-		console.log(analyseTweet(latestTweets));
-		res.json(latestTweets);
+		if (latestTweets.length > 1) {
+			analyseTweet(latestTweets);
+			res.json(latestTweets);
+		} else {
+			res.send("None");
+		}
+
 	}
 })
 
