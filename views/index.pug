@@ -36,7 +36,7 @@ block content
 	script.
 
 		let tweets;
-		var lastSeen = 0;
+		let lastSeen = 0;
 		let interval;
 		$(document).ready(function() {
 			//$('.menu .item').tabs("refresh");
@@ -50,7 +50,7 @@ block content
 					"<li><a href='#tab" + num_tabs + "'>#" + num_tabs + "</a></li>"
 				);
 				$("div#tabs").append(
-					"<div id='tab" + num_tabs + "'>#" + num_tabs + "</div>"
+					"<div id='tab" + num_tabs + "'>#" + num_tabs + "<	/div>"
 				);
 				$("div#tabs").tabs("refresh");
 			});  
@@ -59,18 +59,19 @@ block content
 		$('.tabular.menu .item').tabs();
 
 		function conversation() {
-			let time = new Date();
-			console.log(time);
-			//lastSeen = $('#latestTime').val();
 			$.get('/twitter/twitter', {lastSeen : lastSeen}, function (data) {
 				//console.log(data[2].url);
-				if (data != "None") {
-					console.log(data)
+				//if (data != "None") {
+					console.log(data);
+					//console.log("inside get " + lastSeen);
 					displayTweet(data);
-				}
+					interval = setTimeout(conversation, 5000);
+				//}
 
 				
 			});
+			
+
 			 
 		}
 		var xhr;
@@ -92,6 +93,8 @@ block content
 			});
 		}
 		function displayTweet(data) {
+			let start = new Date();
+			let time3 = 0;
 			for (let i = 0; i < data.length; i ++) {
 				let tweet = data[i];
 				let name = tweet.Name;
@@ -119,9 +122,9 @@ block content
 				
 				$("#messages").prepend(str);
 				$('#latestTime').val(time2);
-				lastSeen = time2;
-				console.log(lastSeen);
+				lastSeen = time2;				
 			}
+			return data.length - 1;
 		}
 
 		function displayTweet2(data) {
@@ -178,7 +181,7 @@ block content
 		}
 
 		function getCheckedHashtag() {
-			interval = setInterval(conversation, 5000);
+			interval = setTimeout(conversation, 5000);
 			let selected = [];
 			for (let i = 0; i < tweets.length; i++) {
 				if ($(`#check${i+1}`).is(":checked")) {

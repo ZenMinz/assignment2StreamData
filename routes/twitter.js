@@ -77,13 +77,13 @@ router.post('/hashTags', function (req, res, next) {
 	})
 
 })
-let streamAPI = {};
+let stream = {};
 router.post('/stream', function (req, res, next) {
 	var data = req.body.trend;
 	//console.log(data);
 	//var tokenizer = new natural.WordTokenizer();
 	//console.log(tokenizer.tokenize("your dog has fleas."));
-
+	console.log("Openning Steam...");
 	var client = new Twitter({
 		consumer_key: 'x5SNQCc6zIJHHr5fQqeQobQt1',
 		consumer_secret: 'RTs8lpgKbDpV9StCynNZPssol8wQdtKf9FyTGybKZZnZcQp05F',
@@ -92,9 +92,9 @@ router.post('/stream', function (req, res, next) {
 	});
 
 
-	var stream = client.stream('statuses/filter', {track: data});
-	streamAPI = stream;
+	stream = client.stream('statuses/filter', {track: data});
 	stream.on('data', function(data) {
+		//console.log("Start Stream");
 		let text;
 		if (!data.extended_tweet) {
 			//console.log(data.text);
@@ -150,6 +150,7 @@ router.get('/twitter', function (req, res) {
 			return results;
 		}
 		if (latestTweets.length > 1) {
+			//console.log(latestTweets.length);
 			analyseTweet(latestTweets);
 			res.json(latestTweets);
 		} else {
@@ -161,7 +162,7 @@ router.get('/twitter', function (req, res) {
 
 router.post('/stop', function (req, res, next) {
 	console.log("test"); 
-	streamAPI.destroy();
+	stream.destroy();
 	res.send("done!!!");
 })
 module.exports = router;
