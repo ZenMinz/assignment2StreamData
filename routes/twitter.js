@@ -35,7 +35,7 @@ router.post('/', function (req, res, next) {
 	//more filter: https://developer.twitter.com/en/docs/tweets/filter-realtime/guides/basic-stream-parameters
 	var stream = client.stream('statuses/filter', {track: 'javascript', language: 'en'});
 	stream.on('data', function(data) {
-  		//console.log(event);
+  		//console.log(data);
 
   		let tweet = {
 			Name: data.user.name,
@@ -78,6 +78,7 @@ router.post('/hashTags', function (req, res, next) {
 
 })
 let stream = {};
+
 router.post('/stream', function (req, res, next) {
 	var data = req.body.trend;
 	//console.log(data);
@@ -94,7 +95,7 @@ router.post('/stream', function (req, res, next) {
 
 	stream = client.stream('statuses/filter', {track: data});
 	stream.on('data', function(data) {
-		//console.log("Start Stream");
+		console.log("data");
 		let text;
 		if (!data.extended_tweet) {
 			//console.log(data.text);
@@ -151,6 +152,7 @@ router.get('/twitter', function (req, res) {
 		}
 		if (latestTweets.length > 1) {
 			//console.log(latestTweets.length);
+			//console.log(analyseTweet(latestTweets));
 			analyseTweet(latestTweets);
 			res.json(latestTweets);
 		} else {
@@ -160,9 +162,10 @@ router.get('/twitter', function (req, res) {
 	}
 })
 
-router.post('/stop', function (req, res, next) {
-	console.log("test"); 
+router.post('/stop', function (req, res, next) { 
 	stream.destroy();
+	console.log("Destroyed Stream");
 	res.send("done!!!");
 })
+
 module.exports = router;
