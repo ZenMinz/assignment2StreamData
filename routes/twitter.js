@@ -11,6 +11,7 @@ var Analyzer = require('natural').SentimentAnalyzer;
 var stemmer = require('natural').PorterStemmer;
 var analyzer = new Analyzer("English", stemmer, "afinn");
 var tokenizer = new natural.WordTokenizer();
+var azure = require('../public/javascripts/azure-storage.js');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -22,7 +23,9 @@ let tweets = [];
 let tweetsNew = [];
 let test = 0;
 //tweets.push("test");
+function storeData(data) {
 
+}
 router.post('/', function (req, res, next) {
 	var client = new Twitter({
 		consumer_key: 'x5SNQCc6zIJHHr5fQqeQobQt1',
@@ -59,6 +62,7 @@ router.post('/hashTags', function (req, res, next) {
 		access_token_secret: 'aoo4x1sdj0RaBsYDcbBxUyiMotxSXuvzhEdAmmztaxw2J'
 	});
 
+	azure.createTable("tabasdle");
 	client.get('trends/place.json', {id : 1, language: "en"}, function (error, trends) {
 		if (error) {
 			console.log(error);
