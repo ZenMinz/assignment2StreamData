@@ -162,7 +162,7 @@ var methods = {
                 }
             })
         })
-    }
+    },
 
     createEntity : function (data) {
         var entGen = azure.TableUtilities.entityGenerator;
