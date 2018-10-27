@@ -102,7 +102,7 @@ router.post('/stream', function (req, res, next) {
 
 	stream = client.stream('statuses/filter', {track: data});
 	stream.on('data', function(data) {
-		console.log("data");
+		//console.log("data");
 		let text;
 		if (!data.extended_tweet) {
 			//console.log(data.text);
@@ -119,16 +119,16 @@ router.post('/stream', function (req, res, next) {
 			source: data.source, 
 			url : data.user.profile_image_url
 		}
-		let result = sentiment.analyze(tweet.text);
+		//let result = sentiment.analyze(tweet.text);
 		tweets.push(tweet);
-		analyzeResults.push(result);
+		//analyzeResults.push(result);
 		postTest(tweet.text);
-		count += 1;
-		if (count == 10) {
-			count = 0;
-			console.log(count);
+		//count += 1;
+		//if (count == 10) {
+		//	count = 0;
+		//	console.log(count);
 
-		}
+		//}
 		//if (tweet.timestamp > lastSeen) {
 		//	tweetsNew.push(tweet);
 		//}
@@ -195,10 +195,11 @@ function getAnalyzer() {
 function postTest(tweetText) {
 	return new Promise(resolve => {
 		request.post({
-			url : 'http://analyzer.australiasoutheast.cloudapp.azure.com:3030/',
+			//url : 'http://analyzer.australiasoutheast.cloudapp.azure.com:3030/',
+			url : 'http://localhost:3030',
 			form : {text : tweetText}
 		}, function(error, response, body) {
-			console.log(body);
+			//console.log(body);
 			resolve(body);
 		})
 })
@@ -237,7 +238,7 @@ router.get('/test', async function (req, res, next) {
 	try {
 		for (let i = 1; i < 2; i++) {
 			test = await postTest("I m dying to play this game");
-			console.log(test + " " + i);
+			//console.log(test + " " + i);
 		}
 		res.send(test);
 	} catch(e) {
