@@ -12,6 +12,8 @@ var stemmer = require('natural').PorterStemmer;
 var analyzer = new Analyzer("English", stemmer, "afinn");
 var tokenizer = new natural.WordTokenizer();
 var azure = require('../public/javascripts/azure-storage.js');
+var http = require('http');
+var request = require('request');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -82,7 +84,8 @@ router.post('/hashTags', function (req, res, next) {
 
 })
 let stream = {};
-
+let analyzeResults = [];
+let count = 0;
 router.post('/stream', function (req, res, next) {
 	var data = req.body.trend;
 	//console.log(data);
@@ -116,7 +119,16 @@ router.post('/stream', function (req, res, next) {
 			source: data.source, 
 			url : data.user.profile_image_url
 		}
+		let result = sentiment.analyze(tweet.text);
 		tweets.push(tweet);
+		analyzeResults.push(result);
+		postTest(tweet.text);
+		count += 1;
+		if (count == 10) {
+			count = 0;
+			console.log(count);
+
+		}
 		//if (tweet.timestamp > lastSeen) {
 		//	tweetsNew.push(tweet);
 		//}
@@ -131,12 +143,12 @@ router.post('/stream', function (req, res, next) {
 router.get('/twitter', function (req, res) {
 	let latestTweets = [];
 	let lastSeen = req.query.lastSeen;
-	console.log(lastSeen + " time");
+	//console.log(lastSeen + " time");
 	if (tweets.length > 1) {
 		for (let i = 0; i < tweets.length; i ++) {
 			let time = tweets[i].timestamp;
 			if (time > lastSeen) {
-				latestTweets.push(tweets[i]);
+				//latestTweets.push(tweets[i]);
 				//get the timestamp of the last tweet that got sent to the client side
 				test = tweets[i].timestamp;
 			} else {
@@ -157,8 +169,8 @@ router.get('/twitter', function (req, res) {
 		if (latestTweets.length > 1) {
 			//console.log(latestTweets.length);
 			//console.log(analyseTweet(latestTweets));
-			analyseTweet(latestTweets);
-			res.json(latestTweets);
+			//analyseTweet(latestTweets);
+			//res.json(latestTweets);
 		} else {
 			res.send("None");
 		}
@@ -170,6 +182,69 @@ router.post('/stop', function (req, res, next) {
 	stream.destroy();
 	console.log("Destroyed Stream");
 	res.send("done!!!");
+})
+
+function getAnalyzer() {
+	http.get({
+		host : 'localhost',
+		port : 3030,
+		path :'/analyze', 
+		method : 'GET'
+	})
+}
+function postTest(tweetText) {
+	return new Promise(resolve => {
+		request.post({
+			url : 'http://analyzer.australiasoutheast.cloudapp.azure.com:3030/',
+			form : {text : tweetText}
+		}, function(error, response, body) {
+			console.log(body);
+			resolve(body);
+		})
+})
+}
+
+function getTest() {
+	return new Promise(resolve => {
+	http.get({
+		host : 'localhost',
+		port : 3030,
+		path : '/',
+		body: {test : "test"},
+		method : 'POST',
+		headers: {'content-type' : 'application/json'},
+		params : {test : "test"}
+	}, function (getRes) {
+		let body = '';
+		getRes.setEncoding('utf8');
+		getRes.on('data', function (data) {
+			body += data;
+		})
+
+		getRes.on('end', function (data) {
+			console.log(body);
+			resolve(body);
+		})
+	}).on('error', function(err) {
+		console.log(err);
+	})
+	})
+
+}
+
+router.get('/test', async function (req, res, next) {
+	let test;
+	try {
+		for (let i = 1; i < 2; i++) {
+			test = await postTest("I m dying to play this game");
+			console.log(test + " " + i);
+		}
+		res.send(test);
+	} catch(e) {
+		console.log(e);
+	}
+
+
 })
 
 module.exports = router;

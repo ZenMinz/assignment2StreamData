@@ -14,6 +14,9 @@ block content
 		br
 		div.tagInput
 		br
+	button#test4.ui.right.labeled.icon.button(onclick='getFromAnother()')
+		i.play.icon
+		|   Test
 	button#test4.ui.right.labeled.icon.button(onclick='getCheckedHashtag()')
 		i.play.icon
 		|   Next
@@ -233,6 +236,11 @@ block content
 			sendPostRequest(str);
 
 
+		}
+		function getFromAnother() {
+			$.get('/twitter/test', function (data) {
+				console.log(data);
+			})
 		}
 
 		$(".btn").click(function() {
