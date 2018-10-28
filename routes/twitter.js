@@ -195,8 +195,8 @@ function getAnalyzer() {
 function postTest(tweetText) {
 	return new Promise(resolve => {
 		request.post({
-			url : 'http://analyzer.australiasoutheast.cloudapp.azure.com:3030/',
-			//url : 'http://localhost:3030',
+			//url : 'http://analyzer.australiasoutheast.cloudapp.azure.com:3030/',
+			url : 'http://10.1.0.4:3030',
 			form : {text : tweetText}
 		}, function(error, response, body) {
 			//console.log(body);
