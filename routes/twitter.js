@@ -238,7 +238,7 @@ router.get('/test', async function (req, res, next) {
 	try {
 		for (let i = 1; i < 2; i++) {
 			test = await postTest("I m dying to play this game");
-			//console.log(test + " " + i);
+			console.log(test + " " + i);
 		}
 		res.send(test);
 	} catch(e) {
