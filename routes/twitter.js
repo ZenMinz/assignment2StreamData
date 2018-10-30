@@ -86,6 +86,7 @@ router.post('/hashTags', function (req, res, next) {
 let stream = {};
 let analyzeResults = [];
 let count = 0;
+let sendTweets = [];
 router.post('/stream', function (req, res, next) {
 	var data = req.body.trend;
 	//console.log(data);
@@ -103,26 +104,38 @@ router.post('/stream', function (req, res, next) {
 	stream = client.stream('statuses/filter', {track: data});
 	stream.on('data', function(data) {
 		//console.log("data");
-		let text;
-		if (!data.extended_tweet) {
+		//let text;
+		//if (!data.extended_tweet) {
 			//console.log(data.text);
-			text = data.text;
-		} else {
+		//	text = data.text;
+		//} else {
 			//console.log(data.extended_tweet.full_text);
-			text = data.extended_tweet.full_text;
-		}
+			//text = data.extended_tweet.full_text;
+		//}
+			//console.log(data);
+			//console.log("test");
+
   		//console.log(data.user.name);
-  		let tweet = {
-			Name: data.user.name,
-			timestamp: parseInt(data.timestamp_ms),
-			text: text,
-			source: data.source, 
-			url : data.user.profile_image_url
-		}
+  		
+  		//let tweet = {
+		//	Name: data.user.name,
+		//	timestamp: parseInt(data.timestamp_ms),
+		//	text: text,
+		//	source: data.source, 
+		//	url : data.user.profile_image_url
+		//}
 		//let result = sentiment.analyze(tweet.text);
-		tweets.push(tweet);
+		///tweets.push(tweet);
 		//analyzeResults.push(result);
-		postTest(tweet.text);
+		count += 1;
+		sendTweets.push(data.text);
+		if (count == 20) {
+			postTest(sendTweets);
+			count = 0;
+			//console.log(JSON.stringify(sendTweets));
+			sendTweets = [];
+		}
+		
 		//count += 1;
 		//if (count == 10) {
 		//	count = 0;
@@ -194,10 +207,12 @@ function getAnalyzer() {
 }
 function postTest(tweetText) {
 	return new Promise(resolve => {
+		console.log(tweetText);
 		request.post({
-			//url : 'http://analyzer.australiasoutheast.cloudapp.azure.com:3030/',
-			url : 'http://10.1.0.4:3030',
-			form : {text : tweetText}
+			url : 'http://assignment2analyzer.australiasoutheast.cloudapp.azure.com/',
+			//url : 'http://10.1.0.4:3030',
+			//url : 'http://localhost:3030',
+			form : {text : JSON.stringify(tweetText)}
 		}, function(error, response, body) {
 			//console.log(body);
 			resolve(body);
