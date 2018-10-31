@@ -1311,7 +1311,11 @@ var segments = {
 			.attr("transform", function() { return math.getPieTranslateCenter(pieCenter); })
 			.attr("class", pie.cssPrefix + "pieChart");
 
+<<<<<<< HEAD
 		var arc = d3.svg.arc()
+=======
+		var arc = d3.arc()
+>>>>>>> e6e4ec69f1c5371a6ddd509bc5f37509af8fd099
 			.innerRadius(pie.innerRadius)
 			.outerRadius(pie.outerRadius)
 			.startAngle(0)
@@ -2174,4 +2178,8 @@ var tt = {
 	};
 
     return d3pie;
+<<<<<<< HEAD
 }));
+=======
+}));
+>>>>>>> e6e4ec69f1c5371a6ddd509bc5f37509af8fd099

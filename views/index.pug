@@ -14,7 +14,7 @@ block content
 		br
 		div.tagInput
 		br
-	button#test4.ui.right.labeled.icon.button(onclick='getFromAnother()')
+	button#test4.ui.right.labeled.icon.button(onclick='showGraph()')
 		i.play.icon
 		|   Test
 	button#test4.ui.right.labeled.icon.button(onclick='getCheckedHashtag()')
@@ -37,6 +37,10 @@ block content
 
 	link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.css')
 	script(src='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js')
+	
+	#pieGraph(style='display: none;')
+		p Graph: 
+	
 	script.
 
 		let tweets;
