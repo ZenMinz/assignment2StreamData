@@ -250,7 +250,8 @@ router.get('/test', async function (req, res, next) {
 	try {
 		for (let i = 1; i < 2; i++) {
 			test = await getTest();
-			console.log(test + " " + i);
+			console.log(test + " hello " + i);
+			res.render('test', { message: test})
 		}
 		res.send(test);
 	} catch(e) {
