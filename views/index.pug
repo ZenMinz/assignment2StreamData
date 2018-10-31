@@ -31,6 +31,10 @@ block content
 	#comments.ui.top.attached.tabular.menu
 	div#details
 
+	#pieGraph(style='display: none;')
+	p Graph: 
+	#pie(d3pie='0.2.1')
+
 	link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.css')
 	script(src='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js')
 	script.
@@ -40,10 +44,12 @@ block content
 		let interval;
 		let emptySpace = 50;
 		let currentTab = 0;
+
 		$(document).ready(function() {
 			//$('.menu .item').tabs("refresh");
 			$('.menu .item').tab();
-			conversation();
+			getHashTags();
+			//conversation();
 
 		$("button#add-tab").click(function() {
 			var num_tabs = $("div#tabs ul li").length + 1;
@@ -230,7 +236,7 @@ block content
 			//selected = JSON.stringify(length);
 			let str = selected.join(',');
 			//console.log(str);
-			//for (let i = 0; i < length; i ++) {
+			//for (let i = 0; i < length; i ++) { 
 			//sendPostRequest(selected[i]);
 			//}
 			sendPostRequest(str);
@@ -238,11 +244,137 @@ block content
 
 		}
 		function getFromAnother() {
-			$.get('/twitter/test', function (data) {
+			let svg = d3.select("svg > g");
+			$.get('/twitter/test', async function (data) {
 				console.log(data);
+				if (svg.empty()) {
+					showGraph4(data);
+				} else {
+					updateGraph(data);
+				}
+				interval = setTimeout(getFromAnother, 5000);
 			})
 		}
 
 		$(".btn").click(function() {
 			$(".btn").css("background-color","yellow");
 		})
+
+		function showGraph(data) {
+
+			var e = document.getElementById('pieGraph');
+			showGraph2(data);
+			if (e.style.display == 'block')
+				e.style.display = 'none';
+			else
+				e.style.display = 'block';
+		}
+
+		function showGraph2(data) {
+			var w = 800,                        //width
+			h = 800,                            //height
+			r = 300,                            //radius
+			color = d3.scale.category20c();     //builtin range of colors
+			//console.log(color);
+			colour = ['#FF0000','#00FF00','#D3D3D3'];
+			//color = colour();
+			//data = JSON.stringify(data);
+			//data = [{"label":"one", "value":20},
+			//{"label":"two", "value":50},
+			//{"label":"three", "value":30}];
+			console.log(data);
+			var vis = d3.select("body")
+			//.append("svg:svg")              //create the SVG element inside the <body>
+			.data([data])                   //associate our data with the document
+			.attr("width", w)           //set the width and height of our visualization (these will be attributes of the <svg> tag
+			.attr("height", h)
+			.append("svg:g")                //make a group to hold our pie chart
+			.attr("transform", "translate(" + r + "," + r + ")")    //move the center of the pie chart from 0, 0 to radius, radius
+			var arc = d3.svg.arc()              //this will create <path> elements for us using arc data
+			.outerRadius(r);
+			var pie = d3.layout.pie()           //this will create arc data for us given a list of values
+			.value(function(d) { return d.value; });    //we must tell it out to access the value of each element in our data array
+			var arcs = vis.selectAll("g.slice")     //this selects all <g> elements with class slice (there aren't any yet)
+			.data(pie)                          //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties)
+			.enter()                            //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+			.append("svg:g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+			.attr("class", "slice");    //allow us to style things in the slices (like text)
+			arcs.append("svg:path")
+			.attr("fill", function(d, i) { return colour[i]; } ) //set the color for each slice to be chosen from the color function defined above
+			.attr("d", arc);                                    //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+			arcs.append("svg:text")                                     //add a label to each slice
+			.attr("transform", function(d) {                    //set the label's origin to the center of the arc
+			//we have to make sure to set these before calling arc.centroid
+			d.innerRadius = 0;
+			d.outerRadius = r;
+			return "translate(" + arc.centroid(d) + ")";        //this gives us a pair of coordinates like [50, 50]
+			})
+			.attr("text-anchor", "middle")                          //center the text on it's origin
+			.text(function(d, i) { return data[i].label; });        //get the label from our original data array
+		}
+
+		function updateGraph2(value) {
+			pie.value(function(d) { return d[value]; }); // change the value function
+			path = path.data(pie); // compute the new angles
+			path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
+		}
+		let pie;
+		function updateGraph(data) {
+			//let svg = d3.select("svg > g");
+			pie.updateProp("data.content", data);
+		}
+
+		function arcTween(a) {
+			var i = d3.interpolate(this._current, a);
+			this._current = i(0);
+			return function(t) {
+			return arc(i(t));
+			};
+		}
+		function showGraph3(data) {
+			var 	width = 960,
+					height = 500,
+					radius = Math.min(width, height) / 2;
+			var color = d3.scale.category20();
+			color = ['#FF0000','#1DA1F2','#D3D3D3'];
+			pie = d3.layout.pie()
+				.value(function(d) { return d.value; })
+				.sort(null);
+			var arc = d3.svg.arc()
+				.innerRadius(radius - 100)
+				.outerRadius(radius - 20);
+			var svg = d3.select("body").append("svg")
+				.attr("width", width)
+				.attr("height", height)
+				.append("g")
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+				var path = svg.datum(data).selectAll("path")
+					.data(pie)
+					.enter().append("path")
+					.attr("fill", function(d, i) { return color[i]; })
+					.attr("d", arc)
+					.each(function(d) { this._current = d; }); // store the initial angles
+			// Store the displayed angles in _current.
+			// Then, interpolate from _current to the new angles.
+			// During the transition, _current is updated in-place by d3.interpolate.
+			
+		}
+
+		function showGraph4(data) {
+			console.log(data);
+			pie = new d3pie("pie", {
+				"header": {
+					"title": {
+						"text": "A Simple Donut Pie"
+					},
+					"location": "pie-center"
+				},
+				"size": {
+					"pieInnerRadius": "80%"
+				},
+				"data" : {
+					"content": data
+				}
+				
+			});
+		}

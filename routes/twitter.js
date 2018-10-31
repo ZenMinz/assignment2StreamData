@@ -205,6 +205,7 @@ function getAnalyzer() {
 		method : 'GET'
 	})
 }
+
 function postTest(tweetText) {
 	return new Promise(resolve => {
 		console.log(tweetText);
@@ -249,8 +250,7 @@ router.get('/test', async function (req, res, next) {
 	let test;
 	try {
 		for (let i = 1; i < 2; i++) {
-			test = await getTest();
-			console.log(test + " " + i);
+			test = JSON.parse(await getTest());
 		}
 		res.send(test);
 	} catch(e) {
