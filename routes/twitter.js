@@ -209,9 +209,9 @@ function postTest(tweetText) {
 	return new Promise(resolve => {
 		console.log(tweetText);
 		request.post({
-			url : 'http://assignment2analyzer.australiasoutheast.cloudapp.azure.com/',
+			//url : 'http://assignment2analyzer.australiasoutheast.cloudapp.azure.com/',
 			//url : 'http://10.1.0.4:3030',
-			//url : 'http://localhost:3030',
+			url : 'http://localhost:3030',
 			form : {text : JSON.stringify(tweetText)}
 		}, function(error, response, body) {
 			//console.log(body);
@@ -225,11 +225,8 @@ function getTest() {
 	http.get({
 		host : 'localhost',
 		port : 3030,
-		path : '/',
-		body: {test : "test"},
-		method : 'POST',
-		headers: {'content-type' : 'application/json'},
-		params : {test : "test"}
+		path : '/results',
+		method : 'get'
 	}, function (getRes) {
 		let body = '';
 		getRes.setEncoding('utf8');
@@ -238,7 +235,7 @@ function getTest() {
 		})
 
 		getRes.on('end', function (data) {
-			console.log(body);
+			//console.log(body);
 			resolve(body);
 		})
 	}).on('error', function(err) {
@@ -252,7 +249,7 @@ router.get('/test', async function (req, res, next) {
 	let test;
 	try {
 		for (let i = 1; i < 2; i++) {
-			test = await postTest("I m dying to play this game");
+			test = await getTest();
 			console.log(test + " " + i);
 		}
 		res.send(test);
