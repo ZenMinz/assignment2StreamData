@@ -9,19 +9,19 @@ block content
 			div.input
 				input#latestTime(type='hidden', name='latestTime', value=0)
 			div.actions
-				button.ui.right.labeled.icon.button
-					i.right.arrow.icon
-					|   Submit
+				button.ui.right.labeled.icon.button(data-content='Test')
+					i.redo.icon
+					|   Refresh
 				br
 			br
 			div.tagInput
 			br
-		button#test4.ui.right.labeled.icon.button(onclick='showGraph()')
+		button#test4.ui.right.labeled.icon.button(onclick='displayGraph()')
 			i.play.icon
 			|   Test
-		button#test4.ui.right.labeled.icon.button(onclick='getCheckedHashtag()')
+		button#test4.ui.right.labeled.icon.button(onclick='streamData()')
 			i.play.icon
-			|   Next
+			|   Stream
 		button#test3.ui.right.labeled.icon.button(onclick='stopStream()')
 			i.stop.icon
 			|  Pause
@@ -33,9 +33,9 @@ block content
 		#comments.ui.top.attached.tabular.menu
 		div#details
 
-		//#pieGraph(style='display: none;')
+		#pieGraph(style='display: none;')
 			p Graph: 
-		//#pie(d3pie='0.2.1')
+		#pie(d3pie='0.2.1')
 
 		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.css')
 		link(rel='stylesheet', href='/stylesheets/style.css')
@@ -43,9 +43,7 @@ block content
 		
 		#pieGraph(style='display: none;')
 			p Graph: 
-	
 	script.
-
 		let tweets;
 		let lastSeen = 0;
 		let interval;
@@ -56,6 +54,8 @@ block content
 			//$('.menu .item').tabs("refresh");
 			$('.menu .item').tab();
 			getHashTags();
+			getFromAnother();
+			interval = setInterval(getFromAnother, 10000);
 			//conversation();
 
 		$("button#add-tab").click(function() {
@@ -82,7 +82,7 @@ block content
 					displayTweet2(data);
 					
 				}
-				interval = setTimeout(conversation, 5000);
+				//interval = setTimeout(conversation, 5000);
 
 				
 			});
@@ -198,7 +198,7 @@ block content
 
 		function displayHashTags(data) {
 			$(".tagInput").empty();
-			let str2 = `<div class="ui grid">`;
+			let str2 = `<div class="ui left aligned grid">`;
 			for (let i = 0; i < data.length; i ++) {
 				//let str = `<button type="button" class="btn btn-outline-primary">${data[i]}</button>`;
 				//$(".tagInput").append(str);
@@ -259,7 +259,7 @@ block content
 				} else {
 					updateGraph(data);
 				}
-				interval = setTimeout(getFromAnother, 5000);
+				//interval = setTimeout(getFromAnother, 5000);
 			})
 		}
 
@@ -372,16 +372,26 @@ block content
 			pie = new d3pie("pie", {
 				"header": {
 					"title": {
-						"text": "A Simple Donut Pie"
+						"text": "Reaction"
 					},
 					"location": "pie-center"
 				},
 				"size": {
-					"pieInnerRadius": "80%"
+					"canvasWidth" : 800,
+					"canvasHeight" : 800,
+					"pieInnerRadius": "70%",
+					"pieOuterRadius": "90%"
 				},
 				"data" : {
 					"content": data
-				}
-				
+				},
+				"labels" : {
+					"mainLabel" : {
+						"fontSize" : 20
+					},
+					"percentage" : {
+						"fontSize" : 15
+					}
+				}				
 			});
 		}
