@@ -1,8 +1,20 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  text-align: center;
+  background-color: #0f94f1;
+  background-image: url("../images/worldwp.png");
 }
 
 a {
   color: #00B7FF;
+}
+
+p {
+  text-align: center;
+}
+
+.buttonarea {
+  background-color: rgba(255, 255, 255, 0.85);
+  background-image: none;
 }

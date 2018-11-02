@@ -1,45 +1,48 @@
 extends layout
 
 block content
-	h1 #{title}
-	p Welcome to #{title}
-	form#message-entry(method="post", action='javascript:getHashTags()')
-		div.input
-			input#latestTime(type='hidden', name='latestTime', value=0)
-		div.actions
-			button.ui.right.labeled.icon.button
-				i.right.arrow.icon
-				|   Submit
-			br
-		br
-		div.tagInput
-		br
-	button#test4.ui.right.labeled.icon.button(onclick='showGraph()')
-		i.play.icon
-		|   Test
-	button#test4.ui.right.labeled.icon.button(onclick='getCheckedHashtag()')
-		i.play.icon
-		|   Next
-	button#test3.ui.right.labeled.icon.button(onclick='stopStream()')
-		i.stop.icon
-		|  Pause
-	div.field
-		div#messages
-	div.field
-		div#comments1.ui.comments
-
-	#comments.ui.top.attached.tabular.menu
-	div#details
-
-	#pieGraph(style='display: none;')
-	p Graph: 
-	#pie(d3pie='0.2.1')
-
-	link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.css')
-	script(src='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js')
 	
-	#pieGraph(style='display: none;')
-		p Graph: 
+	.buttonarea
+		h1 Welcome to Twitter React Application
+		p Please select tags that spark your interest for analysis...
+		form#message-entry(method="post", action='javascript:getHashTags()')
+			div.input
+				input#latestTime(type='hidden', name='latestTime', value=0)
+			div.actions
+				button.ui.right.labeled.icon.button
+					i.right.arrow.icon
+					|   Submit
+				br
+			br
+			div.tagInput
+			br
+		button#test4.ui.right.labeled.icon.button(onclick='showGraph()')
+			i.play.icon
+			|   Test
+		button#test4.ui.right.labeled.icon.button(onclick='getCheckedHashtag()')
+			i.play.icon
+			|   Next
+		button#test3.ui.right.labeled.icon.button(onclick='stopStream()')
+			i.stop.icon
+			|  Pause
+		div.field
+			div#messages
+		div.field
+			div#comments1.ui.comments
+
+		#comments.ui.top.attached.tabular.menu
+		div#details
+
+		//#pieGraph(style='display: none;')
+			p Graph: 
+		//#pie(d3pie='0.2.1')
+
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.css')
+		link(rel='stylesheet', href='/stylesheets/style.css')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js')
+		
+		#pieGraph(style='display: none;')
+			p Graph: 
 	
 	script.
 
