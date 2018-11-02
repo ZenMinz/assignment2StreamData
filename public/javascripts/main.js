@@ -1,17 +1,35 @@
-//Function
-	function stopStream() {
-		$.post('/twitter/stop', function(data) {
-			clearTimeout(interval);
-		});
-	}
-
-	function getHashTags() {
+//Global Functions which are called by the form's elements
+	//Function to get the trending HashTags
+	window.getHashTags = function () {
 		$.post('/twitter/hashTags', function (data) {
 			displayHashTags(data);
 			tweets = data;
 		})
 	}
 
+	//Function to get selected tags and send them to server side
+	window.streamData = function () {
+		let selected = [];
+		for (let i = 0; i < tweets.length; i++) {
+			if ($(`#check${i+1}`).is(":checked")) {
+				selected.push(tweets[i]);
+			}
+		}
+		let length = selected.length;
+		let str = selected.join(',');
+		sendStreamRequest(str);
+		interval = setInterval(displayGraph, 10000);
+	}
+
+	//Function to stop the opening stream
+	window.stopStream = function () {
+		$.post('/twitter/stop', function(data) {
+			clearInterval(interval);
+		});s
+	}
+
+//Functions
+	//Function to display trending HashTag
 	function displayHashTags(data) {
 		$(".tagInput").empty();
 		let str2 = `<div class="ui left aligned grid">`;
@@ -27,23 +45,13 @@
 		$(".tagInput").append(str2);
 		}
 
+	//Function to send stream request to server side
 	function sendStreamRequest(trend) {
 		$.post('/twitter/stream', {'trend': trend}, function (data) {
 		})
 	}
 
-	function streamData() {
-		let selected = [];
-		for (let i = 0; i < tweets.length; i++) {
-			if ($(`#check${i+1}`).is(":checked")) {
-				selected.push(tweets[i]);
-			}
-		}
-		let length = selected.length;
-		let str = selected.join(',');
-		sendStreamRequest(str);
-	}
-
+	//Function to display graph or update graph if a graph is existed.
 	function displayGraph() {
 		let svg = d3.select("svg > g");
 		$.get('/twitter/test', function (data) {
@@ -55,10 +63,12 @@
 		})
 	}
 
+	//Function to update Graph
 	function updateGraph(data) {
 		pie.updateProp("data.content", data);
 	}
 
+	//Function create Graph
 	function buildGraph(data) {
 		pie = new d3pie("pie", {
 			"header": {
@@ -86,12 +96,21 @@
 			}				
 		});
 	}
-
+	//Function to generate unique ID
+	function createUID() {
+		let seed = Date.now();
+		let number = Math.floor(Math.random(seed) * 32) + Date.now();
+		return number;
+	}
+//Main script
 $(document).ready(function() {
+	//Global variables
 	let interval;
 	let tweets;
 	let pie;
+	console.log(createUID());
+
+	//Display hastags and graph
 	getHashTags();
 	displayGraph();
-	interval = setInterval(displayGraph, 10000);
 })
