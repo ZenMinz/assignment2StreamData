@@ -24,8 +24,7 @@ const handleTrendResponse = function(trends) {
 const handleStreamResponse = function(data, sendTweets) {
 	sendTweets.push(data.text);
 	if (sendTweets.length == 20) {
-		postTest(sendTweets);
-		console.log(sendTweets);
+		sendTweets(sendTweets);
 		sendTweets = [];
 	}
 	return sendTweets;
@@ -49,44 +48,30 @@ const postTest2 = function(tweetText) {
 			url : 'http://localhost:3030',
 			form : {text : JSON.stringify(tweetText)}
 		}, function(error, response, body) {
-			//console.log(body);
 			resolve(body);
 		})
 })
 }
 
-const postTest = function(tweetText) {
+const sendTweets = function(tweetText, UID) {
 		request.post({
 			//url : 'http://assignment2analyzer.australiasoutheast.cloudapp.azure.com/',
 			//url : 'http://10.1.0.4:3030',
-			url : 'http://localhost:3030',
-			form : {text : JSON.stringify(tweetText)}
+			url : 'http://localhost:3030/input',
+			form : {text : JSON.stringify(tweetText), UID : UID}
 		})
 }
 
-const getResults = function() {
+const getResults = function(UID) {
 	return new Promise(resolve => {
-	http.get({
-		host : 'localhost',
-		port : 3030,
-		path : '/results',
-		method : 'get'
-	}, function (getRes) {
-		let body = '';
-		getRes.setEncoding('utf8');
-		getRes.on('data', function (data) {
-			body += data;
-		})
-
-		getRes.on('end', function (data) {
-			resolve(body);
-		})
-
-	}).on('error', function(err) {
-		console.log(err);
-	})
+	request.post({
+		url : 'http://localhost:3030/results',
+		form : {UID : UID}
+	}, function (error, response, body) {
+		resolve(body);
 	})
 
+})
 }
 
 module.exports = {
@@ -95,6 +80,6 @@ module.exports = {
 	handleStreamResponse,
 	getAnalyzer,
 	postTest2,
-	postTest,
+	sendTweets,
 	getResults
 }

@@ -1,10 +1,17 @@
+//Global variable
+	let UID;
 //Global Functions which are called by the form's elements
 	//Function to get the trending HashTags
 	window.getHashTags = function () {
 		$.post('/twitter/hashTags', function (data) {
 			displayHashTags(data);
+			stopStream();
+			clearInterval(interval);
+			UID = createUID();
 			tweets = data;
-		})
+		}).fail(function() {
+			alert("No data");
+		});
 	}
 
 	//Function to get selected tags and send them to server side
@@ -25,7 +32,9 @@
 	window.stopStream = function () {
 		$.post('/twitter/stop', function(data) {
 			clearInterval(interval);
-		});s
+		}).fail(function() {
+			//alert("No Steam running :(")
+		});
 	}
 
 //Functions
@@ -47,19 +56,23 @@
 
 	//Function to send stream request to server side
 	function sendStreamRequest(trend) {
-		$.post('/twitter/stream', {'trend': trend}, function (data) {
+		$.post('/twitter/stream', {'trend': trend, "UID" : UID}, function (data) {
+		}).fail(function() {
+			alert("Twitter API does not work :(")
 		})
 	}
 
 	//Function to display graph or update graph if a graph is existed.
 	function displayGraph() {
 		let svg = d3.select("svg > g");
-		$.get('/twitter/test', function (data) {
+		$.get('/twitter/graphData', {"UID" : UID}, function (data) {
 			if (svg.empty()) {
 				buildGraph(data);
 			} else {
 				updateGraph(data);
 			}
+		}).fail(function() {
+			alert("Could not get data from database :(")
 		})
 	}
 
@@ -70,6 +83,7 @@
 
 	//Function create Graph
 	function buildGraph(data) {
+		try {
 		pie = new d3pie("pie", {
 			"header": {
 				"title": {
@@ -81,7 +95,7 @@
 				"canvasWidth" : 800,
 				"canvasHeight" : 800,
 				"pieInnerRadius": "70%",
-				"pieOuterRadius": "90%"
+				"pieOuterRadius": "85%"
 			},
 			"data" : {
 				"content": data
@@ -90,11 +104,21 @@
 				"mainLabel" : {
 					"fontSize" : 20
 				},
-				"percentage" : {
+				"value" : {
 					"fontSize" : 15
+				},
+				"percentage" : {
+					"fontSize" : 20,
+					"color": "#ffffff"
+				},
+				"inner" : {
+					"format" : "percentage"
 				}
 			}				
 		});
+		} catch(e) {
+			alert("Something has gone wrong with d3pie library :(")
+		}
 	}
 	//Function to generate unique ID
 	function createUID() {
@@ -108,8 +132,7 @@ $(document).ready(function() {
 	let interval;
 	let tweets;
 	let pie;
-	console.log(createUID());
-
+	UID = createUID();
 	//Display hastags and graph
 	getHashTags();
 	displayGraph();
