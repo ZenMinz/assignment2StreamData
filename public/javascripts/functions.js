@@ -41,20 +41,6 @@ const getAnalyzer = function() {
 	})
 }
 
-const postTest2 = function(tweetText) {
-	return new Promise(resolve => {
-		console.log(tweetText);
-		request.post({
-			//url : 'http://assignment2analyzer.australiasoutheast.cloudapp.azure.com/',
-			//url : 'http://10.1.0.4:3030',
-			url : `http://${url}:3030`,
-			form : {text : JSON.stringify(tweetText)}
-		}, function(error, response, body) {
-			resolve(body);
-		})
-})
-}
-
 const sendTweets = function(tweetText, UID) {
 		request.post({
 			//url : 'http://assignment2analyzer.australiasoutheast.cloudapp.azure.com/',
@@ -64,16 +50,17 @@ const sendTweets = function(tweetText, UID) {
 		})
 }
 
-const getResults = function(UID) {
-	return new Promise(resolve => {
+const getResults = function(UID, res) {
 	request.post({
 		url : `http://${url}:3030/results`,
 		form : {UID : UID}
 	}, function (error, response, body) {
-		resolve(body);
+		if (error) {
+			res.sendCode(500);
+		} else {
+			res.send(JSON.parse(body));
+		}
 	})
-
-})
 }
 
 module.exports = {
@@ -81,7 +68,6 @@ module.exports = {
 	handleTrendResponse,
 	handleStreamResponse,
 	getAnalyzer,
-	postTest2,
 	sendTweets,
 	getResults
 }

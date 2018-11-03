@@ -64,12 +64,13 @@
 	function displayGraph() {
 		let svg = d3.select("svg > g");
 		$.get('/twitter/graphData', {"UID" : UID}, function (data) {
+			console.log(data);
 			if (svg.empty()) {
 				buildGraph(data);
 			} else {
 				updateGraph(data);
 			}
-			setTimeout(displayGraph, 10000);
+			setTimeout(displayGraph, 5000);
 		}).fail(function() {
 			alert("Could not get data from database :(")
 		})

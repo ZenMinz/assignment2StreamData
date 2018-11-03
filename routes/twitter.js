@@ -23,7 +23,7 @@ router.post('/hashTags', function (req, res, next) {
 })
 
 
-let stream = {};
+let stream;
 
 router.post('/stream', function (req, res, next) {
 	let data = req.body.trend;
@@ -31,7 +31,9 @@ router.post('/stream', function (req, res, next) {
 	let client = functions.createTwitterClient();
 	let sendTweets = [];
 	console.log("Openning Steam...");
-
+	if (stream) {
+		stream.destroy();
+	}
 	stream = client.stream('statuses/filter', {track: data});
 	stream.on('data', function(data) {
 		try {
@@ -47,7 +49,7 @@ router.post('/stream', function (req, res, next) {
 	});
 	stream.on('error', function(error) {
   		console.log(error);
-  		res.sendCode(500);
+  		res.send("error");
 	});
 })
 
@@ -62,12 +64,11 @@ router.post('/stop', function (req, res, next) {
 })
 
 
-router.get('/graphData', async function (req, res, next) {
+router.get('/graphData', function (req, res, next) {
 	let data;
 	let UID = req.query.UID;
 	try {
-		data = JSON.parse(await functions.getResults(UID));
-		res.send(data);
+		functions.getResults(UID, res);
 	} catch(e) {
 		console.log(e);
 		res.sendCode(500);
