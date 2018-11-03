@@ -7,17 +7,17 @@ block content
 		p Please select tags that spark your interest for analysis...
 		form#message-entry(method="post", action='javascript:getHashTags()')
 			div.actions
-				button.ui.right.labeled.icon.button(data-content='Test')
+				button#refreshBTN.ui.right.labeled.icon.button(data-content='Test')
 					i.redo.icon
 					|   Refresh
 				br
 			br
 			div.tagInput
 			br
-		button.ui.right.labeled.icon.button(onclick='streamData()')
+		button#streamBTN.ui.right.labeled.icon.button(onclick='streamData()')
 			i.play.icon
 			|   Stream
-		button.ui.right.labeled.icon.button(onclick='stopStream()')
+		button#pauseBTN.ui.right.labeled.icon.button(onclick='stopStream()')
 			i.stop.icon
 			|  Pause
 		#pie(d3pie='0.2.1')

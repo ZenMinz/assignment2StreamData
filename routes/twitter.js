@@ -7,6 +7,10 @@ var request = require('request');
 
 
 router.post('/hashTags', function (req, res, next) {
+	if (stream) {
+		stream.destroy();
+		steam = {};
+	}
 	let client = functions.createTwitterClient();
 	client.get('trends/place.json', {id : 1}, function (error, trends) {
 		if (error) {
@@ -25,6 +29,7 @@ router.post('/hashTags', function (req, res, next) {
 
 let stream;
 
+
 router.post('/stream', function (req, res, next) {
 	let data = req.body.trend;
 	let UID = req.body.UID;
@@ -33,17 +38,21 @@ router.post('/stream', function (req, res, next) {
 	console.log("Openning Steam...");
 	if (stream) {
 		stream.destroy();
+		steam = {};
 	}
 	stream = client.stream('statuses/filter', {track: data});
 	stream.on('data', function(data) {
 		try {
+
+			console.log("data");
 			sendTweets.push(data.text);
 			if (sendTweets.length == 20) {
+				console.log("test");
 				functions.sendTweets(sendTweets, UID);
 				sendTweets = [];
 			}
 		} catch (e) {
-			res.sendCode(500);
+			console.log("error");
 		}
 
 	});
@@ -57,9 +66,10 @@ router.post('/stream', function (req, res, next) {
 router.post('/stop', function (req, res, next) {
 	try {
 		stream.destroy();
+		steam = {};
 		console.log("Destroyed Stream");	
 	} catch (e) {
-		res.sendCode(500);
+		res.sendStatus(500);
 	}
 })
 

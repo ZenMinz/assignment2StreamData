@@ -3,9 +3,10 @@
 //Global Functions which are called by the form's elements
 	//Function to get the trending HashTags
 	window.getHashTags = function () {
+		$("#streamBTN").prop('disabled', false);
+		$("#pauseBTN").prop('disabled', true);
 		$.post('/twitter/hashTags', function (data) {
 			displayHashTags(data);
-			//clearInterval(interval);
 			UID = createUID();
 			tweets = data;
 		}).fail(function() {
@@ -15,6 +16,8 @@
 
 	//Function to get selected tags and send them to server side
 	window.streamData = function () {
+		$("#streamBTN").prop('disabled', true);
+		$("#pauseBTN").prop('disabled', false);
 		let selected = [];
 		for (let i = 0; i < tweets.length; i++) {
 			if ($(`#check${i+1}`).is(":checked")) {
@@ -28,6 +31,8 @@
 
 	//Function to stop the opening stream
 	window.stopStream = function () {
+		$("#streamBTN").prop('disabled', false);
+		$("#pauseBTN").prop('disabled', true);
 		$.post('/twitter/stop', function(data) {
 			clearInterval(interval);
 		}).fail(function() {
@@ -64,12 +69,15 @@
 	function displayGraph() {
 		let svg = d3.select("svg > g");
 		$.get('/twitter/graphData', {"UID" : UID}, function (data) {
-			console.log(data);
+			if (data != "Error") {
+
+
 			if (svg.empty()) {
 				buildGraph(data);
 			} else {
 				updateGraph(data);
 			}
+		}
 			setTimeout(displayGraph, 5000);
 		}).fail(function() {
 			alert("Could not get data from database :(")
