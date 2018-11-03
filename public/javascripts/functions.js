@@ -1,6 +1,7 @@
 var http = require('http');
 var request = require('request');
 var Twitter = require('twitter');
+var url = "23.101.233.150";
 const createTwitterClient = function() {
 	let client = new Twitter({
 		consumer_key: 'x5SNQCc6zIJHHr5fQqeQobQt1',
@@ -32,7 +33,7 @@ const handleStreamResponse = function(data, sendTweets) {
 
 const getAnalyzer = function() {
 	http.get({
-		host : 'localhost',
+		host : url,
 		port : 3030,
 		path :'/analyze', 
 		method : 'GET'
@@ -45,7 +46,7 @@ const postTest2 = function(tweetText) {
 		request.post({
 			//url : 'http://assignment2analyzer.australiasoutheast.cloudapp.azure.com/',
 			//url : 'http://10.1.0.4:3030',
-			url : 'http://localhost:3030',
+			url : `http://${url}}:3030`,
 			form : {text : JSON.stringify(tweetText)}
 		}, function(error, response, body) {
 			resolve(body);
@@ -57,7 +58,7 @@ const sendTweets = function(tweetText, UID) {
 		request.post({
 			//url : 'http://assignment2analyzer.australiasoutheast.cloudapp.azure.com/',
 			//url : 'http://10.1.0.4:3030',
-			url : 'http://localhost:3030/input',
+			url : `http://${url}}:3030/input`,
 			form : {text : JSON.stringify(tweetText), UID : UID}
 		})
 }
@@ -65,7 +66,7 @@ const sendTweets = function(tweetText, UID) {
 const getResults = function(UID) {
 	return new Promise(resolve => {
 	request.post({
-		url : 'http://localhost:3030/results',
+		url : `http://${url}}:3030/results`,
 		form : {UID : UID}
 	}, function (error, response, body) {
 		resolve(body);
