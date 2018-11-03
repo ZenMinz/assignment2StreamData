@@ -2,7 +2,7 @@ var http = require('http');
 var request = require('request');
 var Twitter = require('twitter');
 var url = "23.101.233.150";
-url = "localhost";
+//url = "localhost";
 const createTwitterClient = function() {
 	let client = new Twitter({
 		consumer_key: 'x5SNQCc6zIJHHr5fQqeQobQt1',
