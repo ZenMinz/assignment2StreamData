@@ -53,11 +53,14 @@ const getResults = function(UID, res) {
 		url : `http://${url}:3030/results`,
 		form : {UID : UID}
 	}, function (error, response, body) {
+		if (response.statusCode == 500) {
+			res.sendStatus(500);
+		}
 		if (error) {
 			res.sendStatus(500);
 		} else {
 			if (body) {
-				console.log(body);				
+				//console.log(body);				
 				body = JSON.parse(body);
 
 				res.send(body);

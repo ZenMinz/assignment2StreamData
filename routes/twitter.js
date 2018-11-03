@@ -43,11 +43,8 @@ router.post('/stream', function (req, res, next) {
 	stream = client.stream('statuses/filter', {track: data});
 	stream.on('data', function(data) {
 		try {
-
-			console.log("data");
 			sendTweets.push(data.text);
 			if (sendTweets.length == 20) {
-				console.log("test");
 				functions.sendTweets(sendTweets, UID);
 				sendTweets = [];
 			}
@@ -58,7 +55,7 @@ router.post('/stream', function (req, res, next) {
 	});
 	stream.on('error', function(error) {
   		console.log(error);
-  		res.send("error");
+  		res.sendStatus(500);
 	});
 })
 
