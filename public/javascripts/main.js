@@ -1,5 +1,6 @@
 //Global variable
 	let UID;
+	let interval;
 //Global Functions which are called by the form's elements
 	//Function to get the trending HashTags
 	window.getHashTags = function () {
@@ -129,7 +130,6 @@
 //Main script
 $(document).ready(function() {
 	//Global variables
-	let interval;
 	let tweets;
 	let pie;
 	UID = createUID();
