@@ -24,7 +24,6 @@ router.post('/hashTags', function (req, res, next) {
 
 
 let stream = {};
-let count = 0;
 
 router.post('/stream', function (req, res, next) {
 	let data = req.body.trend;
@@ -39,8 +38,6 @@ router.post('/stream', function (req, res, next) {
 			sendTweets.push(data.text);
 			if (sendTweets.length == 20) {
 				functions.sendTweets(sendTweets, UID);
-				count += 20;
-				//console.log(count);
 				sendTweets = [];
 			}
 		} catch (e) {

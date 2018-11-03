@@ -1,13 +1,11 @@
 //Global variable
 	let UID;
-	let interval;
 //Global Functions which are called by the form's elements
 	//Function to get the trending HashTags
 	window.getHashTags = function () {
 		$.post('/twitter/hashTags', function (data) {
 			displayHashTags(data);
-			stopStream();
-			clearInterval(interval);
+			//clearInterval(interval);
 			UID = createUID();
 			tweets = data;
 		}).fail(function() {
@@ -26,7 +24,6 @@
 		let length = selected.length;
 		let str = selected.join(',');
 		sendStreamRequest(str);
-		interval = setInterval(displayGraph, 10000);
 	}
 
 	//Function to stop the opening stream
@@ -34,7 +31,7 @@
 		$.post('/twitter/stop', function(data) {
 			clearInterval(interval);
 		}).fail(function() {
-			//alert("No Steam running :(")
+			alert("No Steam running :(")
 		});
 	}
 
@@ -72,6 +69,7 @@
 			} else {
 				updateGraph(data);
 			}
+			setTimeout(displayGraph, 10000);
 		}).fail(function() {
 			alert("Could not get data from database :(")
 		})
