@@ -64,7 +64,8 @@ router.post('/stop', function (req, res, next) {
 	try {
 		stream.destroy();
 		steam = {};
-		console.log("Destroyed Stream");	
+		console.log("Destroyed Stream");
+		res.sendStatus(200);	
 	} catch (e) {
 		res.sendStatus(500);
 	}

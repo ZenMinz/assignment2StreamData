@@ -40,7 +40,7 @@
 		$("#streamBTN").prop('disabled', false);
 		$("#pauseBTN").prop('disabled', true);
 		$.post('/twitter/stop', function(data) {
-			clearInterval(interval);
+			alert("Stream stopped.")
 		}).fail(function() {
 			alert("No Steam running :(")
 		});
