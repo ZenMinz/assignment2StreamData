@@ -46,7 +46,11 @@ const sendTweets = function(tweetText, UID) {
 		request.post({
 			url : `http://${url}:${port}/input`,
 			form : {text : JSON.stringify(tweetText), UID : UID}
-		})
+		}), function (error) {
+			if (error) {
+				console.log(error);
+			}
+		}
 }
 
 const getResults = function(UID, res) {
