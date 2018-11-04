@@ -36,11 +36,11 @@
 	}
 
 	//Function to stop the opening stream
-	window.stopStream = function () {
+	window.stopStream = function (e) {
 		$("#streamBTN").prop('disabled', false);
 		$("#pauseBTN").prop('disabled', true);
 		$.post('/twitter/stop', function(data) {
-			alert("Stream stopped.")
+			alert("Stream stopped." + e);
 		}).fail(function() {
 			alert("No Steam running :(")
 		});
@@ -92,6 +92,7 @@
 			$(".dimmer").hide();
 			$("body").css("overflow", "auto");
 			setTimeout(displayGraph, 5000);
+			stopStream("Could not connecto to database");
 		})
 	}
 
