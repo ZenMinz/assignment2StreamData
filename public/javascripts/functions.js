@@ -49,6 +49,7 @@ const sendTweets = function(tweetText, UID) {
 }
 
 const getResults = function(UID, res) {
+	try {
 	request.post({
 		url : `http://${url}:3030/results`,
 		form : {UID : UID}
@@ -60,9 +61,8 @@ const getResults = function(UID, res) {
 			res.sendStatus(500);
 		} else {
 			if (body) {
-				//console.log(body);				
+				//console.log(body);			
 				body = JSON.parse(body);
-
 				res.send(body);
 			} else {
 				res.send("Error");
@@ -70,6 +70,9 @@ const getResults = function(UID, res) {
 
 		}
 	})
+	} catch (e) {
+		res.send("Error");
+	}
 }
 
 module.exports = {
