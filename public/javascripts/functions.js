@@ -2,7 +2,7 @@ var http = require('http');
 var request = require('request');
 var Twitter = require('twitter');
 var url = "23.101.233.150";
-//url = "localhost";
+url = "40.81.62.185";
 const createTwitterClient = function() {
 	let client = new Twitter({
 		consumer_key: 'x5SNQCc6zIJHHr5fQqeQobQt1',
@@ -35,7 +35,7 @@ const handleStreamResponse = function(data, sendTweets) {
 const getAnalyzer = function() {
 	http.get({
 		host : url,
-		port : 3030,
+		port : 80,
 		path :'/analyze', 
 		method : 'GET'
 	})
@@ -43,7 +43,7 @@ const getAnalyzer = function() {
 
 const sendTweets = function(tweetText, UID) {
 		request.post({
-			url : `http://${url}:3030/input`,
+			url : `http://${url}:80/input`,
 			form : {text : JSON.stringify(tweetText), UID : UID}
 		})
 }
@@ -51,7 +51,7 @@ const sendTweets = function(tweetText, UID) {
 const getResults = function(UID, res) {
 	try {
 	request.post({
-		url : `http://${url}:3030/results`,
+		url : `http://${url}:80/results`,
 		form : {UID : UID}
 	}, function (error, response, body) {
 		if (response.statusCode == 500) {
