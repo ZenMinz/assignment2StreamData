@@ -92,7 +92,6 @@
 			$(".dimmer").hide();
 			$("body").css("overflow", "auto");
 			setTimeout(displayGraph, 5000);
-			//stopStream("Could not connecto to database");
 		})
 	}
 

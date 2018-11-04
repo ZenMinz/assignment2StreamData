@@ -40,6 +40,7 @@ router.post('/stream', function (req, res, next) {
 		stream.destroy();
 		steam = {};
 	}
+
 	stream = client.stream('statuses/filter', {track: data});
 	stream.on('data', function(data) {
 		try {
@@ -53,10 +54,11 @@ router.post('/stream', function (req, res, next) {
 		}
 
 	});
+
 	stream.on('error', function(error) {
   		console.log(error);
-  		res.sendStatus(500);
 	});
+	res.sendStatus(200);
 })
 
 
