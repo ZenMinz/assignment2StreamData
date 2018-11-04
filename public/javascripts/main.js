@@ -91,6 +91,7 @@
 			alert("Could not get data from database :(");
 			$(".dimmer").hide();
 			$("body").css("overflow", "auto");
+			setTimeout(displayGraph, 5000);
 		})
 	}
 
