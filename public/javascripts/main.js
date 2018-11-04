@@ -61,7 +61,7 @@
 	function sendStreamRequest(trend) {
 		$.post('/twitter/stream', {'trend': trend, "UID" : UID}, function (data) {
 		}).fail(function() {
-			alert("Twitter API does not work :(")
+			//alert("Twitter API does not work :(")
 		})
 	}
 

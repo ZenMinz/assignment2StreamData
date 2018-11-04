@@ -44,7 +44,7 @@ router.post('/stream', function (req, res, next) {
 	stream.on('data', function(data) {
 		try {
 			sendTweets.push(data.text);
-			if (sendTweets.length == 20) {
+			if (sendTweets.length == 10) {
 				functions.sendTweets(sendTweets, UID);
 				sendTweets = [];
 			}
