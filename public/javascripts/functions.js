@@ -2,10 +2,8 @@ var http = require('http');
 var request = require('request');
 var Twitter = require('twitter');
 var url = "23.101.233.150";
-var port = 3030;
-//url = "40.81.62.185";
-url = "localhost";
-//url = "analyzer.australiasoutheast.cloudapp.azure.com"
+var port = 80;
+url = "analyzer.australiasoutheast.cloudapp.azure.com";
 const createTwitterClient = function() {
 	let client = new Twitter({
 		consumer_key: 'x5SNQCc6zIJHHr5fQqeQobQt1',
@@ -57,7 +55,7 @@ const getResults = function(UID, res) {
 		url : `http://${url}:${port}/results`,
 		form : {UID : UID}
 	}, function (error, response, body) {
-		if (!response) {
+		if (error) {
 			res.sendStatus(500);
 		} else {
 		if (response.statusCode == 500) {
