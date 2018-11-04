@@ -40,7 +40,7 @@
 		$("#streamBTN").prop('disabled', false);
 		$("#pauseBTN").prop('disabled', true);
 		$.post('/twitter/stop', function(data) {
-			alert("Stream stopped." + e);
+			alert("Stream stopped.");
 		}).fail(function() {
 			alert("No Steam running :(")
 		});
@@ -88,7 +88,7 @@
 			$("body").css("overflow", "auto");
 			setTimeout(displayGraph, 5000);
 		}).fail(function() {
-			alert("Could not get data from database :(");
+			alert("Could not get data from database. Trying again...");
 			$(".dimmer").hide();
 			$("body").css("overflow", "auto");
 			setTimeout(displayGraph, 5000);
