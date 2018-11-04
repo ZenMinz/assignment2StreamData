@@ -16,8 +16,7 @@
 
 	//Function to get selected tags and send them to server side
 	window.streamData = function () {
-		$("#streamBTN").prop('disabled', true);
-		$("#pauseBTN").prop('disabled', false);
+
 		let selected = [];
 		for (let i = 0; i < tweets.length; i++) {
 			if ($(`#check${i+1}`).is(":checked")) {
@@ -26,7 +25,14 @@
 		}
 		let length = selected.length;
 		let str = selected.join(',');
-		sendStreamRequest(str);
+		if (length > 0) {
+			$("#streamBTN").prop('disabled', true);
+			$("#pauseBTN").prop('disabled', false);
+			sendStreamRequest(str);
+		} else {
+			alert("Please select at least a tag to start.")
+		}
+		
 	}
 
 	//Function to stop the opening stream
@@ -78,9 +84,13 @@
 				updateGraph(data);
 			}
 		}
+			$(".dimmer").hide();
+			$("body").css("overflow", "auto");
 			setTimeout(displayGraph, 5000);
 		}).fail(function() {
-			alert("Could not get data from database :(")
+			alert("Could not get data from database :(");
+			$(".dimmer").hide();
+			$("body").css("overflow", "auto");
 		})
 	}
 
@@ -136,6 +146,8 @@
 	}
 //Main script
 $(document).ready(function() {
+	$("body").css("overflow", "hidden");
+	$('.dimmer').show();
 	//Global variables
 	let tweets;
 	let pie;

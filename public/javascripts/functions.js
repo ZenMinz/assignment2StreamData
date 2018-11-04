@@ -2,7 +2,9 @@ var http = require('http');
 var request = require('request');
 var Twitter = require('twitter');
 var url = "23.101.233.150";
+var port = 3030;
 url = "40.81.62.185";
+url = "localhost";
 const createTwitterClient = function() {
 	let client = new Twitter({
 		consumer_key: 'x5SNQCc6zIJHHr5fQqeQobQt1',
@@ -35,7 +37,7 @@ const handleStreamResponse = function(data, sendTweets) {
 const getAnalyzer = function() {
 	http.get({
 		host : url,
-		port : 80,
+		port : port,
 		path :'/analyze', 
 		method : 'GET'
 	})
@@ -43,7 +45,7 @@ const getAnalyzer = function() {
 
 const sendTweets = function(tweetText, UID) {
 		request.post({
-			url : `http://${url}:80/input`,
+			url : `http://${url}:${port}/input`,
 			form : {text : JSON.stringify(tweetText), UID : UID}
 		})
 }
@@ -51,23 +53,19 @@ const sendTweets = function(tweetText, UID) {
 const getResults = function(UID, res) {
 	try {
 	request.post({
-		url : `http://${url}:80/results`,
+		url : `http://${url}:${port}/results`,
 		form : {UID : UID}
 	}, function (error, response, body) {
+		console.log(response.statusCode);
 		if (response.statusCode == 500) {
 			res.sendStatus(500);
-		}
-		if (error) {
-			res.sendStatus(500);
 		} else {
-			if (body) {
-				//console.log(body);			
-				body = JSON.parse(body);
-				res.send(body);
-			} else {
-				res.send("Error");
-			}
-
+				try {
+					body = JSON.parse(body);
+					res.send(body);
+				} catch(e) {
+					res.send("Error");
+				}			
 		}
 	})
 	} catch (e) {

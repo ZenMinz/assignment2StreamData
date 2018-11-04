@@ -1,8 +1,10 @@
 extends layout
 
 block content
-	
+
 	.buttonarea
+		.ui.active.dimmer
+			.ui.loader
 		h1 Welcome to Twitter React Application
 		p Please select tags that spark your interest for analysis...
 		form#message-entry(method="post", action='javascript:getHashTags()')
@@ -21,7 +23,3 @@ block content
 			i.stop.icon
 			|  Pause
 		#pie(d3pie='0.2.1')
-
-		
-		#pieGraph(style='display: none;')
-			p Graph: 
